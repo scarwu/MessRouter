@@ -13,10 +13,12 @@ require_once '../src/MessRouter.php';
 // Route for GET Method
 $GetRoute = array(
 	array('/:string/:string.html', function($result) {
-		echo 'GET /:string/:string.html => ' . $result[0];
+		echo 'GET /:string/:string.html => ';
+		print_r($result);
 	}),
 	array('/:string(?:/)?', function($result) {
-		echo 'GET /:string(?:/)? => ' . $result[0];
+		echo 'GET /:string(?:/)? => ';
+		print_r($result);
 	}),
 	array('default', function() {
 		echo 'GET Default Route';
@@ -26,10 +28,12 @@ $GetRoute = array(
 // Route for GET Method
 $PostRoute = array(
 	array('/user/:string', function($result) {
-		echo 'POST /user/:string => ' . $result[0];
+		echo 'POST /user/:string => ';
+		print_r($result);
 	}, 'POST'),
 	array('/file', function($result) {
-		echo 'POST /file => ' . $result[0];
+		echo 'POST /file => ';
+		print_r($result);
 	}, 'POST'),
 	array('default', function() {
 		echo 'POST Default Route';
