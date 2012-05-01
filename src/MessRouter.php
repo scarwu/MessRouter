@@ -159,7 +159,7 @@ class MessRouter {
 			if(NULL !== $this->_default_route)
 				$this->_rule[$this->_method]['callback'][$this->_default_route]();
 			else
-				Response::HTTPCode(404);
+				header('HTTP\1.1 404 Not Found');
 		}
 	}
 }
