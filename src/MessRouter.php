@@ -21,6 +21,11 @@ class MessRouter {
 	private $_default_route;
 	
 	/**
+	 * @var string
+	 */
+	private $_match_route;
+	
+	/**
 	 * @var bool
 	 */
 	private $_is_match;
@@ -33,7 +38,7 @@ class MessRouter {
 	/**
 	 * @var string
 	 */
-	private $_uri;
+	private $_path;
 	
 	/**
 	 * @var string
@@ -43,7 +48,7 @@ class MessRouter {
 	/**
 	 * Constructor
 	 */
-	public function __construct($method, $uri, $route = NULL) {
+	public function __construct($method, $path, $route = NULL) {
 		$this->_rule = array(
 			'get' => array(
 				'path' => array(),
@@ -67,6 +72,7 @@ class MessRouter {
 			)
 		);
 		
+		$this->_match_route = NULL;
 		$this->_default_route = NULL;
 		$this->_is_match = FALSE;
 		
@@ -78,7 +84,7 @@ class MessRouter {
 		
 		$this->_method = strtolower($method);
 		
-		$this->_uri = $uri;
+		$this->_path = $path;
 		
 		if(NULL !== $route)
 			$this->AddRouteList($route);
@@ -134,6 +140,15 @@ class MessRouter {
 	}
 	
 	/**
+	 * Match Route
+	 * 
+	 * @return string
+	 */
+	public function MatchRoute() {
+		return $this->_match_route;
+	}
+	
+	/**
 	 * Run Router
 	 * 
 	 * @return void
@@ -148,7 +163,8 @@ class MessRouter {
 			if(!$this->_rule[$this->_method]['full_regex'][$index])
 				$path = $this->RegexGenerator($path);
 			
-			if(preg_match($path, $this->_uri, $match)) {
+			if(preg_match($path, $this->_path, $match)) {
+				$this->_match_route = $path;
 				$this->_is_match = TRUE;
 				$this->_rule[$this->_method]['callback'][$index](array_slice($match, 1));
 				break;
@@ -156,8 +172,10 @@ class MessRouter {
 		}
 		
 		if(FALSE === $this->_is_match) {
-			if(NULL !== $this->_default_route)
+			if(NULL !== $this->_default_route) {
+				$this->_match_route = 'default';
 				$this->_rule[$this->_method]['callback'][$this->_default_route]();
+			}
 			else
 				header('HTTP\1.1 404 Not Found');
 		}
